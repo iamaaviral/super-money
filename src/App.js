@@ -1,23 +1,57 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import "./App.css";
+import PointsTable from "./components/pointsTable/pointsTable";
+import Matches from "./components/matches/matches";
+import { filterPlayerMatches } from "./utils/filterPlayerMatches";
+import { MapResultsToPlayers } from "./utils/mapResultsToPlayers";
 
 function App() {
+  const [tableData, setTableData] = useState([]);
+  const [showPointsTable, setShowPointsTable] = useState(true);
+  const [selectedPlayerId, setSelectedPlayerId] = useState(null);
+  const [allMatches, setAllMatches] = useState([]);
+  const [currentPlayerMatches, setCurrentPlayerMatches] = useState([]);
+  const [winningsMap, setWinningsMap] = useState({});
+
+  const showMatches = (playerId) => {
+    setSelectedPlayerId(playerId);
+    const matches = filterPlayerMatches(allMatches, playerId);
+    setCurrentPlayerMatches(matches);
+    setShowPointsTable(false);
+  };
+
+  useEffect(() => {
+    fetch("https://api.npoint.io/ca180e840b481675d500")
+      .then((res) => res.json())
+      .then((result) => setTableData(result))
+      .catch((e) => console.log(e));
+  }, []);
+
+  useEffect(() => {
+    fetch("https://api.npoint.io/bc3f07c7442e85446788")
+      .then((res) => res.json())
+      .then((result) => setAllMatches(result))
+      .catch((e) => console.log(e));
+  }, []);
+
+
+  useEffect(() => {
+    if(allMatches.length > 0 && tableData.length > 0) {
+      setWinningsMap(MapResultsToPlayers(allMatches, tableData))
+    }
+  }, [allMatches, tableData])
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {showPointsTable ? (
+        <PointsTable showMatches={showMatches} tableData={tableData} winningsMap={winningsMap}/>
+      ) : (
+        <Matches
+          selectedPlayerId={selectedPlayerId}
+          currentPlayerMatches={currentPlayerMatches}
+          setShowPointsTable={setShowPointsTable}
+          tableData={tableData}
+        />
+      )}
     </div>
   );
 }

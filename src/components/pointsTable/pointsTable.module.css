@@ -1,0 +1,31 @@
+.ptWrapper {
+    border: 1px solid red;
+    height: 100%;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.ptHeader {
+    text-align: start;
+}
+
+.playerIcon {
+    height: 64x;
+    width: 64px;
+}
+
+.epWrapper {
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+    padding: 16px;
+    align-items: center;
+    border-bottom: 1px solid lightgrey;
+    cursor: pointer;
+    font-size: 24px;
+    font-weight: bold;
+}
+.playerName {
+    justify-self: start;
+}
