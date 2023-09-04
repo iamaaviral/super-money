@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import PointsTable from "./components/pointsTable/pointsTable";
 import Matches from "./components/matches/matches";
-import { filterPlayerMatches } from "./utils/filterPlayerMatches";
 import { MapResultsToPlayers } from "./utils/mapResultsToPlayers";
 
 function App() {
@@ -10,13 +9,10 @@ function App() {
   const [showPointsTable, setShowPointsTable] = useState(true);
   const [selectedPlayerId, setSelectedPlayerId] = useState(null);
   const [allMatches, setAllMatches] = useState([]);
-  const [currentPlayerMatches, setCurrentPlayerMatches] = useState([]);
   const [winningsMap, setWinningsMap] = useState({});
 
   const showMatches = (playerId) => {
     setSelectedPlayerId(playerId);
-    const matches = filterPlayerMatches(allMatches, playerId);
-    setCurrentPlayerMatches(matches);
     setShowPointsTable(false);
   };
 
@@ -40,6 +36,7 @@ function App() {
       setWinningsMap(MapResultsToPlayers(allMatches, tableData))
     }
   }, [allMatches, tableData])
+
   return (
     <div className="App">
       {showPointsTable ? (
@@ -47,7 +44,7 @@ function App() {
       ) : (
         <Matches
           selectedPlayerId={selectedPlayerId}
-          currentPlayerMatches={currentPlayerMatches}
+          winningsMap={winningsMap}
           setShowPointsTable={setShowPointsTable}
           tableData={tableData}
         />
